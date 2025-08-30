@@ -1,32 +1,68 @@
 import { PublicClientApplication } from '@azure/msal-browser';
 import type { AuthenticationResult, AccountInfo } from '@azure/msal-browser';
 import { Client } from '@microsoft/microsoft-graph-client';
-import { authConfig, loginRequest } from './auth.config';
+import { authConfig, loginRequest } from './auth.config.js';
 
-class AuthService {
+export class AuthService {
     public msalInstance: PublicClientApplication;
     private graphClient: Client | null = null;
 
-    constructor() {
+    private static instance: AuthService | null = null;
+    private initialized = false;
+
+    private constructor() {
         this.msalInstance = new PublicClientApplication(authConfig);
     }
 
+    public static getInstance(): AuthService {
+        if (!AuthService.instance) {
+            AuthService.instance = new AuthService();
+        }
+        return AuthService.instance;
+    }
+
     async initialize(): Promise<void> {
-        await this.msalInstance.initialize();
-        // Handle redirect promise after login
-        await this.msalInstance.handleRedirectPromise();
+        if (this.initialized) return;
+        
+        try {
+            await this.msalInstance.initialize();
+            // Handle redirect promise after login
+            await this.msalInstance.handleRedirectPromise();
+            this.initialized = true;
+            console.log('MSAL successfully initialized');
+        } catch (error) {
+            console.error('Failed to initialize MSAL:', error);
+            throw error;
+        }
     }
 
     private async getTokenSilent(account: AccountInfo): Promise<AuthenticationResult> {
         try {
-            return await this.msalInstance.acquireTokenSilent({
+            console.log('Attempting silent token acquisition...');
+            const result = await this.msalInstance.acquireTokenSilent({
                 ...loginRequest,
                 account
             });
-        } catch (error) {
+            console.log('Silent token acquisition successful');
+            return result;
+        } catch (error: any) {
             console.error('Silent token acquisition failed:', error);
-            // If silent token acquisition fails, try interactive method
-            return this.msalInstance.acquireTokenPopup(loginRequest);
+            
+            // Check if we need to do interactive login
+            if (error.name === "InteractionRequiredAuthError") {
+                console.log('Interaction required, attempting popup login...');
+                try {
+                    return await this.msalInstance.acquireTokenPopup({
+                        ...loginRequest,
+                        account
+                    });
+                } catch (popupError) {
+                    console.error('Popup login failed:', popupError);
+                    throw popupError;
+                }
+            }
+            
+            throw error;
         }
     }
 
@@ -88,4 +124,4 @@ class AuthService {
     }
 }
 
-export const authService = new AuthService();
+export const authService = AuthService.getInstance();

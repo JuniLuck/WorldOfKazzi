@@ -7,13 +7,11 @@
     import type { Notebook, OnenoteSection } from '@microsoft/microsoft-graph-types';
     import { tokenManager } from '$lib/services/token-manager.js';
 
-    let notebooks: Notebook[] = [];
-    let expandedNotebooks: Set<string> = new Set();
-    let sections: { [key: string]: OnenoteSection[] } = {};
+    import { NOTEBOOK_CONFIG } from '$lib/services/notebook-config.js';
+    let sections: OnenoteSection[] = [];
     let isLoggedIn = false;
     let isLoading = true;
     let error: string | null = null;
-    let loadingSections: Set<string> = new Set();
 
     onMount(async () => {
         if (!browser) return;
@@ -23,7 +21,7 @@
             const token = await tokenManager.getValidToken().catch(() => null);
             if (token) {
                 isLoggedIn = true;
-                await loadNotebooks();
+                await loadSections();
             }
         } catch (error) {
             console.error('Error initializing:', error);
@@ -34,56 +32,47 @@
     });
 
     async function getGraphClient() {
-        return Client.init({
-            authProvider: tokenManager.createAuthProvider()
-        });
+        try {
+            // Get a fresh Graph API token using the public method
+            const token = await azureAuthService.acquireTokenForGraph();
+            
+            console.log('Got Graph token:', token ? 'Token exists' : 'No token');
+            console.log('Graph token preview:', token.substring(0, 20) + '...');
+            
+            return Client.init({
+                authProvider: (callback) => {
+                    callback(null, token);
+                }
+            });
+        } catch (error) {
+            console.error('Error creating Graph client:', error);
+            throw new Error('Failed to authenticate - please try logging in again');
+        }
     }
 
-    async function loadNotebooks() {
+    async function loadSections() {
         try {
             const client = await getGraphClient();
-            const response = await client
-                .api('/users/{user-id}/onenote/notebooks')
-                .select('id,displayName,links,createdDateTime')
-                .version('beta')  // Use beta endpoint for better personal account support
-                .get();
-            notebooks = response.value || [];
-            console.log('Notebooks response:', response);
-        } catch (error) {
-            console.error('Error loading notebooks:', error);
-            // Log the full error for debugging
-            console.error('Full error:', JSON.stringify(error, null, 2));
-            throw error;
-        }
-    }
-
-    async function toggleNotebook(notebookId: string) {
-        if (!expandedNotebooks.has(notebookId)) {
-            expandedNotebooks.add(notebookId);
-            loadingSections.add(notebookId);
-            loadingSections = loadingSections; // trigger reactivity
             
+            // Directly get sections for the specific notebook
             try {
-                const client = await getGraphClient();
+                console.log('Loading sections directly from notebook:', NOTEBOOK_CONFIG.notebookId);
                 const response = await client
-                    .api(`/users/{user-id}/onenote/notebooks/${notebookId}/sections`)
+                    .api(`/me/onenote/notebooks/${NOTEBOOK_CONFIG.notebookId}/sections`)
                     .select('id,displayName,createdDateTime')
-                    .version('beta')  // Use beta endpoint for better personal account support
                     .get();
-                sections[notebookId] = response.value;
-                sections = sections; // trigger reactivity
-            } catch (error) {
-                console.error('Error loading sections:', error);
-                error = `Failed to load sections for notebook: ${error.message}`;
-                expandedNotebooks.delete(notebookId);
-            } finally {
-                loadingSections.delete(notebookId);
-                loadingSections = loadingSections; // trigger reactivity
+                
+                sections = response.value || [];
+                console.log('DND notebook sections loaded:', sections);
+            } catch (e) {
+                console.error('Error loading sections:', e);
+                throw new Error('Unable to load notebook sections');
             }
-        } else {
-            expandedNotebooks.delete(notebookId);
+        } catch (error) {
+            console.error('Error loading sections:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Failed to load notebook sections';
+            error = errorMessage;
         }
-        expandedNotebooks = expandedNotebooks; // trigger reactivity
     }
 
     async function handleLogin() {
@@ -93,15 +82,15 @@
             console.log('Login result:', result);
             if (result) {
                 isLoggedIn = true;
-                console.log('Loading notebooks...');
-                await loadNotebooks();
-                console.log('Notebooks loaded:', notebooks);
+                console.log('Loading sections...');
+                await loadSections();
+                console.log('Sections loaded:', sections);
             } else {
                 error = 'Login failed - no result returned';
             }
         } catch (err) {
             console.error('Login error:', err);
-            error = `Login failed: ${err.message}`;
+            error = `Login failed: ${err instanceof Error ? err.message : String(err)}`;
         }
     }
 
@@ -109,9 +98,7 @@
         try {
             await azureAuthService.logout();
             isLoggedIn = false;
-            notebooks = [];
-            sections = {};
-            expandedNotebooks.clear();
+            sections = [];
         } catch (error) {
             console.error('Logout error:', error);
         }
@@ -150,48 +137,29 @@
 
     {#if isLoggedIn}
         {#if isLoading}
-            <div class="text-gray-600 text-center py-4">Loading notebooks...</div>
-        {:else if notebooks.length === 0}
-            <div class="text-gray-600 text-center py-4">No notebooks found</div>
+            <div class="text-gray-600 text-center py-4">Loading sections...</div>
         {:else}
             <div class="space-y-2">
-                {#each notebooks as notebook}
-                    <div class="border-b border-gray-200 pb-2">
-                        <button
-                            class="flex items-center space-x-2 w-full hover:bg-gray-200 p-2 rounded"
-                            on:click={() => toggleNotebook(notebook.id)}
-                            disabled={loadingSections.has(notebook.id)}
-                        >
-                            <span class="text-lg">
-                                {#if loadingSections.has(notebook.id)}
-                                    ⋯
-                                {:else}
-                                    {expandedNotebooks.has(notebook.id) ? '▼' : '▶'}
-                                {/if}
-                            </span>
-                            <span>{notebook.displayName}</span>
-                        </button>
-
-                        {#if expandedNotebooks.has(notebook.id)}
-                            <div class="ml-6 mt-2 space-y-1">
-                                {#if loadingSections.has(notebook.id)}
-                                    <div class="text-gray-600 text-sm py-2">Loading sections...</div>
-                                {:else if sections[notebook.id]?.length === 0}
-                                    <div class="text-gray-600 text-sm py-2">No sections found</div>
-                                {:else}
-                                    {#each sections[notebook.id] || [] as section}
-                                        <a
-                                            href="/section/{section.id}"
-                                            class="block hover:bg-gray-200 p-2 rounded text-blue-600 hover:text-blue-800"
-                                        >
-                                            {section.displayName}
-                                        </a>
-                                    {/each}
-                                {/if}
-                            </div>
-                        {/if}
-                    </div>
-                {/each}
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        {NOTEBOOK_CONFIG.notebookName}
+                    </h2>
+                </div>
+                
+                <div class="space-y-1 p-2">
+                    {#if sections.length === 0}
+                        <div class="text-gray-600 text-sm py-2">No sections found</div>
+                    {:else}
+                        {#each sections as section}
+                            <a
+                                href="/section/{section.id}"
+                                class="block hover:bg-gray-100 p-2 rounded text-gray-700 hover:text-gray-900"
+                            >
+                                {section.displayName}
+                            </a>
+                        {/each}
+                    {/if}
+                </div>
             </div>
         {/if}
     {/if}

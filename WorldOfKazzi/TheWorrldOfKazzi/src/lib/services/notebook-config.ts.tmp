@@ -1,0 +1,8 @@
+/**
+ * Configuration for the DND notebook integration
+ */
+export const NOTEBOOK_CONFIG = {
+    notebookId: '0-2A982C9E458A03FE!28254',
+    notebookName: 'dnd note',
+    refreshInterval: 30000
+} as const;

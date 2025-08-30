@@ -6,12 +6,16 @@
     import { browser } from '$app/environment';
     import { azureAuthService } from '$lib/services/azure-auth.js';
     
-    onMount(() => {
+    onMount(async () => {
         // Initialize auth only in the browser
         if (browser) {
-            azureAuthService.initialize().catch(error => {
+            try {
+                console.log('Initializing auth service...');
+                await azureAuthService.initialize();
+                console.log('Auth service initialized successfully');
+            } catch (error) {
                 console.error('Failed to initialize auth:', error);
-            });
+            }
         }
     });
 </script>

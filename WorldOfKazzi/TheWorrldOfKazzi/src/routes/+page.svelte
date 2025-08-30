@@ -1,40 +1,37 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { getNotebook, getNotebookPages, getPageContent } from '$lib/services/onenote-direct';
+    import { onMount, onDestroy } from 'svelte';
+    import { dndNotebookService, notebookPages, notebookError, isLoading } from '$lib/services/dnd-notebook.service.js';
+    import { NOTEBOOK_CONFIG } from '../lib/services/notebook-config.js';
 
-    const NOTEBOOK_ID = '0-2A982C9E458A03FE';
-    let pages = [];
-    let loading = true;
-    let error = null;
-    let selectedPageContent = null;
+    // Define the type for a notebook page
+    type NotebookPage = {
+        id: string;
+        title: string;
+        // add other properties if needed
+    };
 
-    onMount(async () => {
-        try {
-            loading = true;
-            // Get notebook info
-            const notebook = await getNotebook(NOTEBOOK_ID);
-            console.log('Notebook:', notebook);
-            
-            // Get all pages
-            const notebookPages = await getNotebookPages(NOTEBOOK_ID);
-            pages = notebookPages;
-            console.log('Pages:', pages);
-        } catch (err) {
-            console.error('Error:', err);
-            error = err.message;
-        } finally {
-            loading = false;
-        }
-    });
+    let selectedPageContent: string | null = null;
+    
+    // Use the Svelte stores
+    $: pages = $notebookPages as NotebookPage[];
+    $: error = $notebookError;
+    $: loading = $isLoading;
 
     async function loadPageContent(pageId: string) {
         try {
-            selectedPageContent = await getPageContent(pageId);
+            selectedPageContent = await dndNotebookService.getPageContent(pageId);
         } catch (err) {
             console.error('Error loading page:', err);
-            error = `Failed to load page: ${err.message}`;
+            if (err instanceof Error) {
+                notebookError.set(err.message);
+            }
         }
     }
+
+    // Clean up when the component is destroyed
+    onDestroy(() => {
+        dndNotebookService.cleanup();
+    });
 </script>
 
 <div class="max-w-4xl mx-auto p-4">
@@ -46,6 +43,14 @@
         </div>
     {:else}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Notebook Header -->
+            <div class="mb-4">
+                <h2 class="text-xl font-bold mb-2">DND Notes</h2>
+                <p class="text-sm text-gray-600">
+                    Auto-refreshes every {Math.round(NOTEBOOK_CONFIG.refreshInterval / 1000)} seconds
+                </p>
+            </div>
+            
             <!-- Pages List -->
             <div class="border-r pr-4">
                 <h2 class="text-xl font-bold mb-4">Pages</h2>
