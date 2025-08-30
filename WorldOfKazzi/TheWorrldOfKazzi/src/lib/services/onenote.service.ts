@@ -1,12 +1,27 @@
 import type { Notebook, OnenoteSection, OnenotePage } from '@microsoft/microsoft-graph-types';
-import { authService } from './auth.service.js';
-import { authConfig } from './auth.config.js';
+import { azureAuthService } from './azure-auth.js';
+import { Client } from '@microsoft/microsoft-graph-client';
 
 export class OneNoteService {
+    async getGraphClient() {
+        try {
+            // Get a fresh Graph API token
+            const token = await azureAuthService.acquireTokenForGraph();
+            
+            return Client.init({
+                authProvider: (callback) => {
+                    callback(null, token);
+                }
+            });
+        } catch (error) {
+            console.error('Error creating Graph client:', error);
+            throw new Error('Failed to authenticate - please try logging in again');
+        }
+    }
     async shareNotebook(notebookId: string): Promise<void> {
         try {
             console.log('Sharing notebook...');
-            const client = authService.getGraphClient();
+            const client = await this.getGraphClient();
             
             // First, get the drive item ID for the notebook
             const notebook = await client
@@ -56,7 +71,7 @@ export class OneNoteService {
     async getNotebooks(): Promise<Notebook[]> {
         try {
             console.log('Fetching notebooks...');
-            const client = authService.getGraphClient();
+            const client = await this.getGraphClient();
             const response = await client
                 .api('/me/onenote/notebooks')
                 .select('id,displayName,links,createdDateTime')
@@ -73,7 +88,7 @@ export class OneNoteService {
     }
 
     async getSections(notebookId: string): Promise<OnenoteSection[]> {
-        const client = authService.getGraphClient();
+        const client = await this.getGraphClient();
         const response = await client
             .api(`/me/onenote/notebooks/${notebookId}/sections`)
             .select('id,displayName,createdDateTime')
@@ -82,7 +97,7 @@ export class OneNoteService {
     }
 
     async getPages(sectionId: string): Promise<OnenotePage[]> {
-        const client = authService.getGraphClient();
+        const client = await this.getGraphClient();
         const response = await client
             .api(`/me/onenote/sections/${sectionId}/pages`)
             .select('id,title,createdDateTime,contentUrl')
@@ -91,7 +106,7 @@ export class OneNoteService {
     }
 
     async getPageContent(pageId: string): Promise<string> {
-        const client = authService.getGraphClient();
+        const client = await this.getGraphClient();
         const response = await client
             .api(`/me/onenote/pages/${pageId}/content`)
             .get();
@@ -99,7 +114,7 @@ export class OneNoteService {
     }
 
     async searchPages(searchTerm: string): Promise<OnenotePage[]> {
-        const client = authService.getGraphClient();
+        const client = await this.getGraphClient();
         const response = await client
             .api('/me/onenote/pages')
             .search(searchTerm)

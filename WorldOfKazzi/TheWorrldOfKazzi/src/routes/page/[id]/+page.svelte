@@ -1,7 +1,7 @@
 <!-- src/routes/page/[id]/+page.svelte -->
 <script lang="ts">
     import { page } from '$app/stores';
-    import { oneNoteService } from '$lib/services/onenote.service';
+    import { oneNoteService } from '$lib/services/onenote.service.js';
     import { onMount } from 'svelte';
     import { marked } from 'marked';
 
@@ -11,6 +11,9 @@
 
     onMount(async () => {
         try {
+            if (!pageId) {
+                throw new Error('Page ID is required');
+            }
             const rawContent = await oneNoteService.getPageContent(pageId);
             content = processOneNoteContent(rawContent);
         } catch (error) {
