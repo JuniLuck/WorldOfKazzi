@@ -43,5 +43,16 @@
 	},
 	"keywords": [
 		"svelte"
-	]
+	],
+	"dependencies": {
+		"@azure/identity": "^4.11.1",
+		"@azure/msal-browser": "^4.21.1",
+		"@microsoft/microsoft-graph-client": "^3.0.7",
+		"@microsoft/microsoft-graph-types": "^2.40.0",
+		"@tailwindcss/typography": "^0.5.16",
+		"autoprefixer": "^10.4.21",
+		"marked": "^16.2.1",
+		"postcss": "^8.5.6",
+		"tailwindcss": "^4.1.12"
+	}
 }
