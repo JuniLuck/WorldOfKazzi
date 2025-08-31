@@ -76,7 +76,7 @@ export default defineConfig({
             key: key,
             cert: cert,
         },
-        host: '192.168.178.42',
+        host: 'localhost',
         port: 5173,
         strictPort: true,
     }

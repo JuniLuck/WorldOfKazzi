@@ -9,26 +9,15 @@ export const notebookPages = writable([]);
 export const notebookError = writable<string | null>(null);
 export const isLoading = writable(true);
 
-// Initialize the Graph client
-const client = Client.init({
-    authProvider: async (done: AuthProviderCallback) => {
-        try {
-            const token = await tokenManager.getValidToken();
-            done(null, token);
-        } catch (error) {
-            done(error as Error, null);
-        }
-    }
-});
+// Graph client will be initialized when needed
+let client: Client | null = null;
 
 export class DndNotebookService {
     private static instance: DndNotebookService;
     private refreshTimer: NodeJS.Timeout | null = null;
 
     private constructor() {
-        // Auto-refresh disabled - OneNote API requires SharePoint license
-        console.log('DND Notebook Service: Auto-refresh disabled due to licensing requirements');
-        // this.startAutoRefresh();
+        console.log('DND Notebook Service: Created');
     }
 
     public static getInstance(): DndNotebookService {
@@ -36,6 +25,21 @@ export class DndNotebookService {
             DndNotebookService.instance = new DndNotebookService();
         }
         return DndNotebookService.instance;
+    }
+
+    public async initialize() {
+        if (!client) {
+            client = Client.init({
+                authProvider: async (done: AuthProviderCallback) => {
+                    try {
+                        const token = await tokenManager.getValidToken();
+                        done(null, token);
+                    } catch (error) {
+                        done(error as Error, null);
+                    }
+                }
+            });
+        }
     }
 
     private startAutoRefresh(): void {
@@ -53,7 +57,7 @@ export class DndNotebookService {
         this.refreshPages();
     }
 
-    private async refreshPages(): Promise<void> {
+    public async refreshPages(): Promise<void> {
         try {
             isLoading.set(true);
             notebookError.set(null);
@@ -74,14 +78,31 @@ export class DndNotebookService {
 
     public async getPages() {
         try {
-            // Direct API call to the specific notebook's pages
-            const response = await client
-                .api(`/me/onenote/notebooks/${NOTEBOOK_CONFIG.notebookId}/pages`)
-                .select('id,title,createdDateTime,lastModifiedDateTime,content')
-                .orderby('lastModifiedDateTime desc')
-                .count(true) // Include total count
-                .top(50) // Limit to 50 most recent pages for better performance
+            if (!client) {
+                throw new Error('Graph client not initialized. Call initialize() first.');
+            }
+
+            // First, get the sections of the notebook
+            const sectionsResponse = await client
+                .api(`/me/onenote/notebooks/${NOTEBOOK_CONFIG.notebookId}/sections`)
                 .get();
+
+            if (!sectionsResponse.value || sectionsResponse.value.length === 0) {
+                throw new Error('No sections found in the notebook');
+            }
+
+            // Use the first section (or you could specify which section you want)
+            const sectionId = sectionsResponse.value[0].id;
+
+            // Now get the pages from that section
+            const response = await client
+                .api(`/me/onenote/sections/${sectionId}/pages`)
+                .select('id,title,createdDateTime,lastModifiedDateTime')
+                .orderby('lastModifiedDateTime desc')
+                .count(true)
+                .top(50)
+                .get();
+
             return response.value;
         } catch (error) {
             console.error('Error fetching pages:', error);
@@ -91,9 +112,13 @@ export class DndNotebookService {
 
     public async getPageContent(pageId: string): Promise<string> {
         try {
-            // Direct API call to get the specific page content from your notebook
+            if (!client) {
+                throw new Error('Graph client not initialized. Call initialize() first.');
+            }
+
+            // Direct API call to get the specific page content
             const response = await client
-                .api(`/me/onenote/notebooks/${NOTEBOOK_CONFIG.notebookId}/pages/${pageId}/content`)
+                .api(`/me/onenote/pages/${pageId}/content`)
                 .header('Accept', 'text/html') // Explicitly request HTML content
                 .get();
             return response;

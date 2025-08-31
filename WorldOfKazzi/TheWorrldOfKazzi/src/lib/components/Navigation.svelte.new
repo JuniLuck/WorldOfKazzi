@@ -1,3 +1,4 @@
+<!-- Navigation.svelte -->
 <script lang="ts">
     import { page } from '$app/stores';
     $: isAdminPage = $page.url.pathname.startsWith('/admin');
