@@ -126,13 +126,13 @@ export class OneNoteService {
 
     async getPages(): Promise<any[]> {
         try {
-            // Use direct fetch for pages - get all pages from the user, not from a specific notebook
+            // Use direct fetch for pages from the DND notebook
             await azureAuthService.initialize();
             const token = await azureAuthService.acquireTokenForGraph();
             
-            console.log('OneNote Service: Fetching all pages (OneNote API doesn\'t support notebook/pages endpoint)...');
+            console.log('OneNote Service: Fetching pages from DND notebook...');
             
-            const response = await fetch('https://graph.microsoft.com/v1.0/me/onenote/pages?$top=50&$orderby=lastModifiedDateTime desc', {
+            const response = await fetch(`https://graph.microsoft.com/v1.0/me/onenote/notebooks/${NOTEBOOK_CONFIG.notebookId}/pages`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -146,10 +146,7 @@ export class OneNoteService {
             }
             
             const data = await response.json();
-            console.log('OneNote Service: All pages loaded:', data.value?.length || 0);
-            
-            // Filter for pages that might be from the DND notebook
-            // Note: We can't directly filter by notebook in the API, so we get all pages
+            console.log('OneNote Service: Pages loaded:', data.value?.length || 0);
             return data.value || [];
             
         } catch (error) {

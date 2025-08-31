@@ -3,11 +3,10 @@
     import { azureAuthService } from '$lib/services/azure-auth.js';
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
-    import { Client } from '@microsoft/microsoft-graph-client';
-    import type { Notebook, OnenoteSection } from '@microsoft/microsoft-graph-types';
+    import type { OnenoteSection } from '@microsoft/microsoft-graph-types';
     import { tokenManager } from '$lib/services/token-manager.js';
-
     import { NOTEBOOK_CONFIG } from '$lib/services/notebook-config.js';
+
     let sections: OnenoteSection[] = [];
     let isLoggedIn = false;
     let isLoading = true;
@@ -31,47 +30,86 @@
         }
     });
 
-    async function getGraphClient() {
-        try {
-            // Get a fresh Graph API token using the public method
-            const token = await azureAuthService.acquireTokenForGraph();
-            
-            console.log('Got Graph token:', token ? 'Token exists' : 'No token');
-            console.log('Graph token preview:', token.substring(0, 20) + '...');
-            
-            return Client.init({
-                authProvider: (callback) => {
-                    callback(null, token);
-                }
-            });
-        } catch (error) {
-            console.error('Error creating Graph client:', error);
-            throw new Error('Failed to authenticate - please try logging in again');
-        }
-    }
-
     async function loadSections() {
         try {
-            const client = await getGraphClient();
+            // Direct fetch to the known DND notebook using its ID
+            const token = await azureAuthService.acquireTokenForGraph();
+            console.log('=== Direct Fetch: DND Note Sections Only ===');
             
-            // Directly get sections for the specific notebook
-            try {
-                console.log('Loading sections directly from notebook:', NOTEBOOK_CONFIG.notebookId);
-                const response = await client
-                    .api(`/me/onenote/notebooks/${NOTEBOOK_CONFIG.notebookId}/sections`)
-                    .select('id,displayName,createdDateTime')
-                    .get();
+            // Use the notebook ID from config to directly get sections
+            const notebookId = '0-2A982C9E458A03FE!28254';
+            console.log('Fetching sections from notebook ID:', notebookId);
+            
+            const sectionsResponse = await fetch(`https://graph.microsoft.com/v1.0/me/onenote/notebooks/${notebookId}/sections`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!sectionsResponse.ok) {
+                const errorText = await sectionsResponse.text();
+                console.error('Direct sections fetch failed:', sectionsResponse.status, errorText);
                 
-                sections = response.value || [];
-                console.log('DND notebook sections loaded:', sections);
-            } catch (e) {
-                console.error('Error loading sections:', e);
-                throw new Error('Unable to load notebook sections');
+                // If direct approach fails, we might need to find the notebook by name
+                console.log('Direct ID failed, searching by name...');
+                
+                const notebooksResponse = await fetch('https://graph.microsoft.com/v1.0/me/onenote/notebooks', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!notebooksResponse.ok) {
+                    throw new Error(`OneNote API failed: ${notebooksResponse.status}`);
+                }
+                
+                const notebooksData = await notebooksResponse.json();
+                const dndNotebook = notebooksData.value?.find(nb => 
+                    nb.displayName?.toLowerCase().includes('dnd note')
+                );
+                
+                if (!dndNotebook) {
+                    throw new Error('DND notebook not found');
+                }
+                
+                console.log('Found DND notebook by name:', dndNotebook.displayName);
+                console.log('Using notebook ID:', dndNotebook.id);
+                
+                // Try again with the correct ID
+                const retryResponse = await fetch(`https://graph.microsoft.com/v1.0/me/onenote/notebooks/${dndNotebook.id}/sections`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!retryResponse.ok) {
+                    const retryError = await retryResponse.text();
+                    throw new Error(`Sections fetch failed: ${retryResponse.status} - ${retryError}`);
+                }
+                
+                const sectionsData = await retryResponse.json();
+                sections = sectionsData.value || [];
+                
+            } else {
+                const sectionsData = await sectionsResponse.json();
+                sections = sectionsData.value || [];
             }
+            
+            console.log('SUCCESS: DND note sections loaded:', sections.length);
+            
+            if (sections.length > 0) {
+                console.log('Sections:');
+                sections.forEach(section => {
+                    console.log(`  - ${section.displayName}`);
+                });
+            }
+            
         } catch (error) {
             console.error('Error loading sections:', error);
-            const errorMessage = error instanceof Error ? error.message : 'Failed to load notebook sections';
-            error = errorMessage;
+            error = error instanceof Error ? error.message : 'Failed to load DND notebook sections';
         }
     }
 

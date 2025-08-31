@@ -26,8 +26,9 @@ export class DndNotebookService {
     private refreshTimer: NodeJS.Timeout | null = null;
 
     private constructor() {
-        // Start the auto-refresh when the service is created
-        this.startAutoRefresh();
+        // Auto-refresh disabled - OneNote API requires SharePoint license
+        console.log('DND Notebook Service: Auto-refresh disabled due to licensing requirements');
+        // this.startAutoRefresh();
     }
 
     public static getInstance(): DndNotebookService {

@@ -1,7 +1,7 @@
 const msalConfig = {
     auth: {
         clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
-        authority: 'https://login.microsoftonline.com/common',
+        authority: 'https://login.microsoftonline.com/common', // Changed back to 'common' to support both personal and work accounts
         clientSecret: import.meta.env.VITE_AZURE_CLIENT_SECRET,
         redirectUri: typeof window !== 'undefined' ? window.location.origin : 'https://192.168.178.42:5173',
         navigateToLoginRequestUrl: true
