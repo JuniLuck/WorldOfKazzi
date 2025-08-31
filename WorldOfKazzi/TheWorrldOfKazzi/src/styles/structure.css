@@ -1,0 +1,395 @@
+/* Structural Variables - Typography, Spacing, Borders, Shadows */
+:root {
+  /* Typography Scale */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  --font-size-5xl: 48px;
+  --font-size-6xl: 60px;
+  --font-size-7xl: 72px;
+  --font-size-8xl: 96px;
+  --font-size-9xl: 128px;
+
+  /* Font Weights */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* Line Heights */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Letter Spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+
+  /* Font Families */
+  --font-family-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --font-family-fantasy: "Papyrus", "Brush Script MT", "Bradley Hand", cursive;
+
+  /* Spacing Scale (0-1000 in steps of 25) */
+  --space-0: 0;
+  --space-25: 1px;
+  --space-50: 2px;
+  --space-75: 3px;
+  --space-100: 4px;
+  --space-125: 5px;
+  --space-150: 6px;
+  --space-175: 7px;
+  --space-200: 8px;
+  --space-225: 9px;
+  --space-250: 10px;
+  --space-275: 11px;
+  --space-300: 12px;
+  --space-325: 13px;
+  --space-350: 14px;
+  --space-375: 15px;
+  --space-400: 16px;
+  --space-425: 17px;
+  --space-450: 18px;
+  --space-475: 19px;
+  --space-500: 20px;
+  --space-525: 21px;
+  --space-550: 22px;
+  --space-575: 23px;
+  --space-600: 24px;
+  --space-625: 25px;
+  --space-650: 26px;
+  --space-675: 27px;
+  --space-700: 28px;
+  --space-725: 29px;
+  --space-750: 30px;
+  --space-775: 31px;
+  --space-800: 32px;
+  --space-825: 33px;
+  --space-850: 34px;
+  --space-875: 35px;
+  --space-900: 36px;
+  --space-925: 37px;
+  --space-950: 38px;
+  --space-975: 39px;
+  --space-1000: 40px;
+
+  /* Border Radius Scale */
+  --radius-0: 0;
+  --radius-25: 1px;
+  --radius-50: 2px;
+  --radius-75: 3px;
+  --radius-100: 4px;
+  --radius-125: 5px;
+  --radius-150: 6px;
+  --radius-175: 7px;
+  --radius-200: 8px;
+  --radius-225: 9px;
+  --radius-250: 10px;
+  --radius-275: 11px;
+  --radius-300: 12px;
+  --radius-325: 13px;
+  --radius-350: 14px;
+  --radius-375: 15px;
+  --radius-400: 16px;
+  --radius-425: 17px;
+  --radius-450: 18px;
+  --radius-475: 19px;
+  --radius-500: 20px;
+  --radius-525: 21px;
+  --radius-550: 22px;
+  --radius-575: 23px;
+  --radius-600: 24px;
+  --radius-625: 25px;
+  --radius-650: 26px;
+  --radius-675: 27px;
+  --radius-700: 28px;
+  --radius-725: 29px;
+  --radius-750: 30px;
+  --radius-775: 31px;
+  --radius-800: 32px;
+  --radius-825: 33px;
+  --radius-850: 34px;
+  --radius-875: 35px;
+  --radius-900: 36px;
+  --radius-925: 37px;
+  --radius-950: 38px;
+  --radius-975: 39px;
+  --radius-1000: 40px;
+  --radius-full: 9999px;
+
+  /* Border Width Scale */
+  --border-0: 0;
+  --border-25: 1px;
+  --border-50: 2px;
+  --border-75: 3px;
+  --border-100: 4px;
+  --border-125: 5px;
+  --border-150: 6px;
+  --border-175: 7px;
+  --border-200: 8px;
+  --border-225: 9px;
+  --border-250: 10px;
+  --border-275: 11px;
+  --border-300: 12px;
+  --border-325: 13px;
+  --border-350: 14px;
+  --border-375: 15px;
+  --border-400: 16px;
+  --border-425: 17px;
+  --border-450: 18px;
+  --border-475: 19px;
+  --border-500: 20px;
+
+  /* Box Shadow Scale */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+  /* Fantasy-themed Shadows */
+  --shadow-magic: 0 0 20px rgba(159, 14, 240, 0.3), 0 0 40px rgba(159, 14, 240, 0.1);
+  --shadow-fire: 0 0 20px rgba(240, 95, 14, 0.3), 0 0 40px rgba(240, 95, 14, 0.1);
+  --shadow-water: 0 0 20px rgba(14, 175, 240, 0.3), 0 0 40px rgba(14, 175, 240, 0.1);
+  --shadow-earth: 0 0 20px rgba(112, 240, 14, 0.3), 0 0 40px rgba(112, 240, 14, 0.1);
+  --shadow-gold: 0 0 20px rgba(255, 239, 14, 0.4), 0 0 40px rgba(255, 239, 14, 0.2);
+
+  /* Z-Index Scale */
+  --z-behind: -1;
+  --z-auto: auto;
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+
+  /* Width Scale */
+  --width-0: 0;
+  --width-25: 1px;
+  --width-50: 2px;
+  --width-75: 3px;
+  --width-100: 4px;
+  --width-125: 5px;
+  --width-150: 6px;
+  --width-175: 7px;
+  --width-200: 8px;
+  --width-225: 9px;
+  --width-250: 10px;
+  --width-275: 11px;
+  --width-300: 12px;
+  --width-325: 13px;
+  --width-350: 14px;
+  --width-375: 15px;
+  --width-400: 16px;
+  --width-425: 17px;
+  --width-450: 18px;
+  --width-475: 19px;
+  --width-500: 20px;
+  --width-525: 21px;
+  --width-550: 22px;
+  --width-575: 23px;
+  --width-600: 24px;
+  --width-625: 25px;
+  --width-650: 26px;
+  --width-675: 27px;
+  --width-700: 28px;
+  --width-725: 29px;
+  --width-750: 30px;
+  --width-775: 31px;
+  --width-800: 32px;
+  --width-825: 33px;
+  --width-850: 34px;
+  --width-875: 35px;
+  --width-900: 36px;
+  --width-925: 37px;
+  --width-950: 38px;
+  --width-975: 39px;
+  --width-1000: 40px;
+
+  /* Container Widths */
+  --container-xs: 320px;
+  --container-sm: 384px;
+  --container-md: 448px;
+  --container-lg: 512px;
+  --container-xl: 576px;
+  --container-2xl: 672px;
+  --container-3xl: 768px;
+  --container-4xl: 896px;
+  --container-5xl: 1024px;
+  --container-6xl: 1152px;
+  --container-7xl: 1280px;
+  --container-full: 100%;
+  --container-screen: 100vw;
+
+  /* Height Scale */
+  --height-0: 0;
+  --height-25: 1px;
+  --height-50: 2px;
+  --height-75: 3px;
+  --height-100: 4px;
+  --height-125: 5px;
+  --height-150: 6px;
+  --height-175: 7px;
+  --height-200: 8px;
+  --height-225: 9px;
+  --height-250: 10px;
+  --height-275: 11px;
+  --height-300: 12px;
+  --height-325: 13px;
+  --height-350: 14px;
+  --height-375: 15px;
+  --height-400: 16px;
+  --height-425: 17px;
+  --height-450: 18px;
+  --height-475: 19px;
+  --height-500: 20px;
+  --height-525: 21px;
+  --height-550: 22px;
+  --height-575: 23px;
+  --height-600: 24px;
+  --height-625: 25px;
+  --height-650: 26px;
+  --height-675: 27px;
+  --height-700: 28px;
+  --height-725: 29px;
+  --height-750: 30px;
+  --height-775: 31px;
+  --height-800: 32px;
+  --height-825: 33px;
+  --height-850: 34px;
+  --height-875: 35px;
+  --height-900: 36px;
+  --height-925: 37px;
+  --height-950: 38px;
+  --height-975: 39px;
+  --height-1000: 40px;
+
+  /* Viewport Heights */
+  --height-screen: 100vh;
+  --height-min: min-content;
+  --height-max: max-content;
+  --height-fit: fit-content;
+
+  /* Opacity Scale */
+  --opacity-0: 0;
+  --opacity-25: 0.025;
+  --opacity-50: 0.05;
+  --opacity-75: 0.075;
+  --opacity-100: 0.1;
+  --opacity-125: 0.125;
+  --opacity-150: 0.15;
+  --opacity-175: 0.175;
+  --opacity-200: 0.2;
+  --opacity-225: 0.225;
+  --opacity-250: 0.25;
+  --opacity-275: 0.275;
+  --opacity-300: 0.3;
+  --opacity-325: 0.325;
+  --opacity-350: 0.35;
+  --opacity-375: 0.375;
+  --opacity-400: 0.4;
+  --opacity-425: 0.425;
+  --opacity-450: 0.45;
+  --opacity-475: 0.475;
+  --opacity-500: 0.5;
+  --opacity-525: 0.525;
+  --opacity-550: 0.55;
+  --opacity-575: 0.575;
+  --opacity-600: 0.6;
+  --opacity-625: 0.625;
+  --opacity-650: 0.65;
+  --opacity-675: 0.675;
+  --opacity-700: 0.7;
+  --opacity-725: 0.725;
+  --opacity-750: 0.75;
+  --opacity-775: 0.775;
+  --opacity-800: 0.8;
+  --opacity-825: 0.825;
+  --opacity-850: 0.85;
+  --opacity-875: 0.875;
+  --opacity-900: 0.9;
+  --opacity-925: 0.925;
+  --opacity-950: 0.95;
+  --opacity-975: 0.975;
+  --opacity-1000: 1;
+
+  /* Breakpoints */
+  --breakpoint-xs: 320px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Timing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Duration Scale */
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+
+  /* Transform Utilities */
+  --transform-none: none;
+  --rotate-0: 0deg;
+  --rotate-1: 1deg;
+  --rotate-2: 2deg;
+  --rotate-3: 3deg;
+  --rotate-6: 6deg;
+  --rotate-12: 12deg;
+  --rotate-45: 45deg;
+  --rotate-90: 90deg;
+  --rotate-180: 180deg;
+
+  /* Scale Utilities */
+  --scale-0: 0;
+  --scale-50: 0.5;
+  --scale-75: 0.75;
+  --scale-90: 0.9;
+  --scale-95: 0.95;
+  --scale-100: 1;
+  --scale-105: 1.05;
+  --scale-110: 1.1;
+  --scale-125: 1.25;
+  --scale-150: 1.5;
+}
