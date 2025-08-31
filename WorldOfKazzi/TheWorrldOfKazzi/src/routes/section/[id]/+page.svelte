@@ -1,7 +1,7 @@
 <!-- src/routes/section/[id]/+page.svelte -->
 <script lang="ts">
     import { page } from '$app/stores';
-    import { oneNoteService } from '$lib/services/onenote.service.js';
+    import { publicOneNoteService } from '$lib/services/public-onenote.service.js';
     import { onMount } from 'svelte';
     import type { OnenotePage } from '@microsoft/microsoft-graph-types';
 
@@ -14,7 +14,7 @@
             if (!sectionId) {
                 throw new Error('Section ID is required');
             }
-            pages = await oneNoteService.getPages(sectionId);
+            pages = await publicOneNoteService.getPages(sectionId);
         } catch (error) {
             console.error('Error loading pages:', error);
         } finally {

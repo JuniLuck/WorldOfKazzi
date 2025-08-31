@@ -26,8 +26,10 @@ export class DndNotebookService {
     private refreshTimer: NodeJS.Timeout | null = null;
 
     private constructor() {
-        // Start the auto-refresh when the service is created
-        this.startAutoRefresh();
+        // Temporarily disabled auto-refresh to prevent JWT errors
+        // TODO: Update to use certificate authentication
+        // this.startAutoRefresh();
+        console.log('DND Notebook Service: Auto-refresh disabled');
     }
 
     public static getInstance(): DndNotebookService {
