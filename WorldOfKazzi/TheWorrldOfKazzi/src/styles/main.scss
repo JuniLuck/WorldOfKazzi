@@ -1,0 +1,24 @@
+@use 'colors';
+@use 'structure';
+@use 'theme';
+@use 'components';
+@use '../routes/root-layout.scss';
+@use '../routes/home-page.scss';
+@use '../routes/page/[id]/page-detail.scss';
+@use '../routes/section/[id]/section-detail.scss';
+@use '../routes/admin/admin-layout.scss';
+@use '../routes/admin/admin-dashboard.scss';
+@use '../lib/components/Header/Header.scss';
+@use '../lib/components/Navigation.scss';
+@use '../lib/components/ShareNotebook.scss';
+
+/* Main SCSS Bundle - Import all component and page styles */
+/* All @use rules must come first */
+
+/* Main SCSS Bundle - Import all component and page styles */
+
+/* Design System Variables */
+/* Layout Styles */
+/* Page Styles */
+/* Admin Styles */
+/* Component Styles */

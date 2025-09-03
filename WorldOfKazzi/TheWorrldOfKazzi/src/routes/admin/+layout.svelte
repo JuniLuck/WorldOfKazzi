@@ -34,8 +34,8 @@
 </script>
 
 {#if isLoading}
-    <div class="flex items-center justify-center min-h-screen">
-        <div class="text-xl">Loading...</div>
+    <div class="admin-layout-loading">
+        <div class="loading-text">Loading...</div>
     </div>
 {:else if isAuthenticated}
     <slot />

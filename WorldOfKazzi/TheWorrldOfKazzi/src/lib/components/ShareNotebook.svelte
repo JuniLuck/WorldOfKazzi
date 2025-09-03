@@ -35,11 +35,11 @@
     }
 </script>
 
-<div class="flex items-center space-x-2">
+<div class="share-container">
     <button
         on:click={shareNotebook}
         disabled={loading}
-        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="share-button"
     >
         {#if loading}
             Sharing...
@@ -49,10 +49,10 @@
     </button>
 
     {#if error}
-        <p class="text-red-500 text-sm">{error}</p>
+        <p class="error-message">{error}</p>
     {/if}
 
     {#if success}
-        <p class="text-green-500 text-sm">Notebook shared successfully!</p>
+        <p class="success-message">Notebook shared successfully!</p>
     {/if}
 </div>

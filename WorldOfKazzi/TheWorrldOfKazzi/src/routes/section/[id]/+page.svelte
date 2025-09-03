@@ -14,7 +14,7 @@
             if (!sectionId) {
                 throw new Error('Section ID is required');
             }
-            pages = await oneNoteService.getPages(sectionId);
+            pages = await oneNoteService.getPages();
         } catch (error) {
             console.error('Error loading pages:', error);
         } finally {
@@ -23,18 +23,18 @@
     });
 </script>
 
-<div class="max-w-4xl mx-auto">
+<div class="section-container">
     {#if loading}
-        <div class="text-center py-8">Loading pages...</div>
+        <div class="loading-message">Loading pages...</div>
     {:else}
-        <div class="space-y-4">
+        <div class="pages-list">
             {#each pages as page}
                 <a
                     href="/page/{page.id}"
-                    class="block p-4 border rounded hover:bg-gray-50"
+                    class="page-link"
                 >
-                    <h2 class="text-xl font-medium">{page.title}</h2>
-                    <p class="text-gray-600 text-sm">
+                    <h2 class="page-title">{page.title}</h2>
+                    <p class="page-meta">
                         Created: {page.createdDateTime ? new Date(page.createdDateTime).toLocaleDateString() : 'Unknown'}
                     </p>
                 </a>
@@ -42,7 +42,7 @@
         </div>
 
         {#if pages.length === 0}
-            <p class="text-center py-8 text-gray-600">No pages found in this section.</p>
+            <p class="no-pages-message">No pages found in this section.</p>
         {/if}
     {/if}
 </div>

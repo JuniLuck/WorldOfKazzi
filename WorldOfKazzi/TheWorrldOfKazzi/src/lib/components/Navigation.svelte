@@ -1,41 +1,20 @@
 <script lang="ts">
     import { page } from '$app/stores';
-    $: isAdminPage = $page.url.pathname.startsWith('/admin');
+    import Header from './Header/Header.svelte';
 </script>
 
-<nav class="w-64 bg-gray-100 min-h-screen p-4">
+<nav class="navigation">
     <div class="space-y-4">
-        <div class="p-4 border-b border-gray-200">
-            <h2 class="text-lg font-semibold text-gray-800">
-                World of Kazzi
-            </h2>
-        </div>
-
-        <div class="space-y-2">
-            <a
-                href="/"
-                class="block hover:bg-gray-100 p-2 rounded text-gray-700 hover:text-gray-900"
-            >
-                Home
-            </a>
-            {#if !isAdminPage}
-                <a
-                    href="/admin"
-                    class="block hover:bg-gray-100 p-2 rounded text-gray-700 hover:text-gray-900"
-                >
-                    Admin Panel
-                </a>
-            {/if}
-        </div>
+        <Header />
 
         <div class="mt-8">
-            <h3 class="text-sm font-semibold text-gray-600 mb-2">Quick Links</h3>
+            <h3 class="quick-links-title">Quick Links</h3>
             <div class="space-y-1">
-                <a href="/Aldyra" class="block text-sm hover:bg-gray-100 p-2 rounded text-gray-700">Aldyra</a>
-                <a href="/Bosses" class="block text-sm hover:bg-gray-100 p-2 rounded text-gray-700">Bosses</a>
-                <a href="/Dungeons" class="block text-sm hover:bg-gray-100 p-2 rounded text-gray-700">Dungeons</a>
-                <a href="/NPCs" class="block text-sm hover:bg-gray-100 p-2 rounded text-gray-700">NPCs</a>
-                <a href="/Resources" class="block text-sm hover:bg-gray-100 p-2 rounded text-gray-700">Resources</a>
+                <a href="/Aldyra" class="quick-link">Aldyra</a>
+                <a href="/Bosses" class="quick-link">Bosses</a>
+                <a href="/Dungeons" class="quick-link">Dungeons</a>
+                <a href="/NPCs" class="quick-link">NPCs</a>
+                <a href="/Resources" class="quick-link">Resources</a>
             </div>
         </div>
     </div>

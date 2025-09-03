@@ -71,6 +71,33 @@ const { cert, key } = generateCertificate();
 
 export default defineConfig({
     plugins: [sveltekit()],
+    css: {
+        preprocessorOptions: {
+            scss: {
+                silenceDeprecations: ['legacy-js-api']
+            }
+        },
+    },
+    build: {
+        cssCodeSplit: true,
+        assetsInlineLimit: 0,
+        rollupOptions: {
+            output: {
+                assetFileNames: (assetInfo) => {
+                    const info = assetInfo.name?.split('.') || [];
+                    let extType = info[info.length - 1];
+                    if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType || '')) {
+                        extType = 'img';
+                    } else if (/woff2?|eot|ttf|otf/i.test(extType || '')) {
+                        extType = 'fonts';
+                    }
+                    return `${extType}/[name]-[hash][extname]`;
+                },
+                chunkFileNames: 'js/[name]-[hash].js',
+                entryFileNames: 'js/[name]-[hash].js'
+            }
+        }
+    },
     server: {
         https: {
             key: key,

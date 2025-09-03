@@ -1,0 +1,39 @@
+.navigation {
+    width: 16rem; /* w-64 */
+    background-color: #f3f4f6; /* bg-gray-100 */
+    min-height: 100vh; /* min-h-screen */
+    padding: 1rem; /* p-4 */
+}
+
+.navigation .space-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+.navigation .mt-8 {
+    margin-top: 2rem;
+}
+
+.navigation .quick-links-title {
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 600; /* font-semibold */
+    color: #4b5563; /* text-gray-600 */
+    margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.navigation .space-y-1 > * + * {
+    margin-top: 0.25rem;
+}
+
+.navigation .quick-link {
+    display: block;
+    font-size: 0.875rem; /* text-sm */
+    color: #374151; /* text-gray-700 */
+    padding: 0.5rem; /* p-2 */
+    border-radius: 0.25rem; /* rounded */
+    text-decoration: none;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.navigation .quick-link:hover {
+    background-color: #f9fafb; /* hover:bg-gray-100 */
+}

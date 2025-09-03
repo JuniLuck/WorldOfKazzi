@@ -1,0 +1,11 @@
+/* Admin layout styles */
+.admin-layout-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.loading-text {
+    font-size: 1.25rem; /* text-xl */
+}

@@ -1,0 +1,37 @@
+.header {
+    background-color: #ffffff;
+    color: rgb(206, 4, 4);
+    padding: 1rem 0;
+}
+
+.header .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header .logo {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.header .nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.header .nav-list a {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.header .nav-list a:hover {
+    opacity: 0.8;
+}

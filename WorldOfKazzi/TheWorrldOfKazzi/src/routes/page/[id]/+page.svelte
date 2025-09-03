@@ -38,35 +38,12 @@
     }
 </script>
 
-<div class="max-w-4xl mx-auto">
+<div class="page-container">
     {#if loading}
-        <div class="text-center py-8">Loading page content...</div>
+        <div class="loading-message">Loading page content...</div>
     {:else}
-        <article class="prose max-w-none">
+        <article class="page-article prose">
             {@html content}
         </article>
     {/if}
 </div>
-
-<style>
-    :global(.prose img) {
-        max-width: 100%;
-        height: auto;
-    }
-
-    :global(.prose table) {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1em 0;
-    }
-
-    :global(.prose td),
-    :global(.prose th) {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
-
-    :global(.prose tr:nth-child(even)) {
-        background-color: #f2f2f2;
-    }
-</style>
