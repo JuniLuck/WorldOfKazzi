@@ -2,12 +2,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--colour-purple-700);
-    color: var(--colour-gold-450);
+    background-color: var(--colour-purple-650);
+    color: var(--colour-gold-100);
     padding: 0 24px;
     height: 52px;
     font-family: var(--font-family-cinzel);
-    font-weight: var(--font-weight-extrabold);;
+    font-weight: var(--font-weight-extrabold);
+    border-bottom: 2px solid var(--colour-black);
 
     .header-left {
         display: flex;
@@ -29,7 +30,7 @@
         li a {
             font-family: var(--font-family-mako);
             font-size: var(--font-size-sm);
-            color: var(--colour-gold-450);
+            color: var(--colour-gold-100);
             text-decoration: none;
             font-weight: var(--font-weight-bold);
             display: flex;
