@@ -5,8 +5,6 @@
 
 <nav class="navigation">
     <div class="space-y-4">
-        <Header />
-
         <div class="mt-8">
             <h3 class="quick-links-title">Quick Links</h3>
             <div class="space-y-1">

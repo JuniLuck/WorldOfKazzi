@@ -1,8 +1,5 @@
 @use 'colors';
 @use 'structure';
-@use 'theme';
-@use 'components';
-@use '../routes/root-layout.scss';
 @use '../routes/home-page.scss';
 @use '../routes/page/[id]/page-detail.scss';
 @use '../routes/section/[id]/section-detail.scss';

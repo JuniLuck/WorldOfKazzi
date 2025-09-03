@@ -103,7 +103,7 @@ export default defineConfig({
             key: key,
             cert: cert,
         },
-        host: 'localhost',
+        host: true,
         port: 5173,
         strictPort: true,
     }
